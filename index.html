@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Acharya</title>
+    <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Anek Telugu' rel='stylesheet'>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Mouse Memoirs|Product Sans|Concert One|Alumni Sans Inline One">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
+        <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+    <style>
+        /* Start menu styles */
+        .start-menu {
+            width: 400px;
+            background-color: #EBE9D8;
+            /* Windows classic teal background color */
+            position: absolute;
+            bottom: 32px;
+            font-family: sans-serif;
+            left: 0;
+            display: none;
+            border-top: none;
+            border-right: none;
+            border-radius: 6px;
+            border-right: 2px solid #014AB6;
+            border-top: 2px solid #014AB6;
+            z-index: 1;
+            /* Ensure it's above other elements */
+        }
+
+        /* Start menu header styles */
+        .start-menu-header {
+            background-color: #014AB6;
+            color: #fff;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+
+        .start-menu-header img {
+            width: 16px;
+            margin-right: 10px;
+        }
+
+        .start-menu-footer {
+            background-color: #014AB6;
+            color: #fff;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* Align content to the right */
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        .start-menu-footer img {
+            width: 16px;
+        }
+
+
+        /* Start menu program list styles */
+        .start-menu-programs {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .start-menu-programs li {
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .start-menu-programs li:hover {
+            background-color: #ddd;
+            /* Hover color */
+        }
+
+        .start-menu-programs img {
+            margin-right: 10px;
+        }
+
+        /* Style for the "Shut Down" option */
+        .start-menu-programs .shut-down {
+            background-color: #ff0000;
+            /* Red color for "Shut Down" */
+            color: #fff;
+        }
+
+        /* Style for the "Log Off" option */
+        .start-menu-programs .log-off {
+            background-color: #ff9900;
+            /* Orange color for "Log Off" */
+            color: #fff;
+        }
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('/assets/bg-wall.jpg');
+            background-size: cover;
+            /* Cover the entire screen */
+            background-repeat: no-repeat;
+            /* Prevent background image from repeating */
+        }
+
+
+        /* Windows desktop background */
+        #desktop {
+            width: 100%;
+            height: calc(100vh - 32px);
+            /* Adjusted height to account for the taskbar */
+            background-image: url('/assets/bg-wall.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute;
+        }
+
+        /* Windows taskbar */
+        #taskbar {
+            width: 100%;
+            height: 32px;
+            background-color: #0355CB;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            color: #fff;
+            display: flex;
+            justify-content: flex-start;
+            /* Align icons to the left */
+            align-items: center;
+            padding-left: 10px;
+            /* Adjusted padding to create space */
+        }
+
+        /* Start button */
+        #start-button {
+            width: 5%;
+            /* Teal color */
+            color: #fff;
+            cursor: pointer;
+            margin-right: -10px;
+        }
+
+
+
+        .taskbar-icon {
+            width: 100px;
+            /* Adjust the icon size as needed */
+            height: 25px;
+            background-color: #000000;
+            /* Set a background color for taskbar icons */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            margin-left: 50px;
+            border-radius: 5px;
+            border: 3px solid #0245a2;
+        }
+
+        /* Add hover effect */
+        .taskbar-icon:hover {
+            background-color: #ddd;
+            /* Change background color on hover */
+        }
+
+
+
+        /* Window container */
+        .window {
+            width: 450px;
+            height: 480px;
+            background-color: #EBE9D8;
+            border: 2px solid #0355CB;
+            position: absolute;
+            top: 47%;
+            left: 50%;
+            font-size: 18px;
+            font-family: Anek Telugu;
+            border-radius: 5px;
+            transform: translate(-50%, -50%) scale(0);
+            /* Initially hide windows with scale(0) */
+            transition: transform 0.3s ease-in-out;
+            /* Add animation to scale */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Window title bar */
+        .window-title {
+            background-color: #0355CB;
+            /* Teal color */
+            color: #fff;
+            padding-left: 12px;
+            padding-top: 5px;
+            font-size: 22px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Window content */
+        .window-content {
+            padding: 10px;
+            flex-grow: 1;
+            /* Make content area expand to fill the window */
+        }
+
+        /* Close button */
+        .close-button {
+            cursor: pointer;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-left: 7px;
+            padding-right: 7px;
+            color: #fff;
+            border: none;
+            margin-right: 5px;
+        }
+    </style>
+    <style>
+        /* Add CSS for the click animation */
+        img.clickable {
+            width: 80px;
+            padding-left: 25px;
+            width: 3%;
+            transition: transform 0.1s;
+            /* Animation duration */
+            cursor: pointer;
+        }
+
+        img.clickable {
+            transition: transform 0.2s ease;
+            /* Add a smooth transition effect */
+        }
+
+        img.clickable:active {
+            transform: scale(0.9);
+            /* Scale down slightly on click */
+        }
+
+        img.click {
+            width: 80px;
+            transition: transform 0.1s;
+            /* Animation duration */
+        }
+
+        img.click {
+            transition: transform 0.2s ease;
+            /* Add a smooth transition effect */
+        }
+
+        img.click:active {
+            transform: scale(0.9);
+            /* Scale down slightly on click */
+        }
+
+        img.custom-cursor {
+            cursor: pointer;
+        }
+    </style>
+    <style>
+        .icon-adjust {
+            padding-top: 33px;
+            padding-left: 25px;
+            transition: transform 0.1s;
+        }
+
+        .icon-text {
+            padding-left: 25px;
+            color: white;
+            font-size: 12px;
+            font-family: sans-serif;
+        }
+
+        img.click {
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        img.click:active {
+            transform: scale(0.9);
+        }
+    </style>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+    <style>
+        /* Loading screen styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #008080;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-message {
+            width: 100%;
+            max-width: 1350px;
+            /* Set a maximum width if needed */
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .loading-bar {
+            width: 0;
+            height: 10px;
+            background-color: #ffffff;
+            /* Loading bar color */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: width 5s linear;
+            /* Duration of the loading animation (5 seconds) */
+        }
+
+        /* Add a new CSS class for opened icons */
+        .opened-icon {
+            border: 2px solid #0355CB;
+            /* Add a border to opened icons */
+            color: #0355CB;
+            /* Change the text color for opened icons */
+        }
+
+        /* Apply the 'opened-icon' class to the taskbar icons when a window is open */
+        .taskbar-icon.opened {
+            border: 2px solid #0355CB;
+            /* Add a border to opened icons */
+            color: #0355CB;
+            /* Change the text color for opened icons */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="loading-screen">
+        <div class="loading-message">
+            <img src="/assets/bg-img.jpg" style="width: 1350px;height:760px;padding-top:100px" alt="">
+        </div>
+        <div class="loading-bar"></div>
+    </div> -->
+
+    <div id="desktop">
+
+        <!-- Education Icon -->
+        <img class="icon-adjust clickable" src="/img/Education.png" class="ci" alt="Education"
+            onclick="toggleWindow('education-window')"><br>
+        <span class="icon-text">Education</span><br>
+
+        <!-- Projects Icon -->
+        <img class="icon-adjust clickable" src="/img/Projects.png" class="ci" alt="Projects"
+            onclick="toggleWindow('projects-window')"><br>
+        <span class="icon-text">Projects</span><br>
+
+        <!-- About Icon -->
+        <img class="icon-adjust clickable" src="/img/About.png" class="ci" alt="About"
+            onclick="toggleWindow('about-window')"><br>
+        <span class="icon-text">About</span><br>
+
+        <!-- Contact Icon -->
+        <img class="icon-adjust clickable" src="/img/Contact.png" class="ci" alt="Contact"
+            onclick="toggleWindow('contact-window')"><br>
+        <span class="icon-text">Contact</span><br>
+
+        <!-- Resume Icon -->
+        <img class="icon-adjust clickable" src="/img/Resume.png" class="ci" alt="Resume"
+            onclick="toggleWindow('cv-window')"><br>
+        <span class="icon-text">Resume</span><br>
+
+
+
+
+
+        <!-- About App -->
+        <div class="window" id="about-window">
+            <div class="window-title">
+                About
+                <img class="close-button" src="/img/Exit.png" style="width:25px" onclick="closeWindow('about-window')">
+            </div>
+            <div class="window-content">
+                <!-- Add your content here -->
+                <p style="font-family: Anek Telugu;font-size:15px">Hello I'm Aditya Acharya and I'm 20 years old,
+                    Currently Pursuing my BCA from Jims Greater Noida, I love to work on new technologies. I want to
+                    become a Software developer in future for that I continuously brush up my Data structures skills on
+                    leetcode every day, feel free to contact me on my mail or call me I'm always active on both of them!
+                <ol>
+                    <li style="font-size:14px">Skills</li>
+                    <div class="content hidden" id="web-scraper-content" style="font-size:12px">
+                        ● Programming | Java, C++, C, Php, Python, Javascript, Go language <br>
+                        ● Web & Database | Html, Css, Mysql, Node.js, Bootstrap <br>
+                        ● Concepts | Object Oriented Programming, Data structures and algorithms <br>
+                        ● Technologies | VSCode, Wordpress, Jupyter notebook, Google collab <br>
+                        ● Language | English, Hindi
+                        <hr>
+                    </div>
+                    <li style="font-size:14px">Looking for positions</li>
+                    <div class="content hidden" id="data-analysis-content" style="font-size:14px">
+                        ● Java Developer <br>
+                        ● Web Developer <br>
+                        ● Junior Software Developer <br>
+                        ● Technical Trainee <br>
+                        ● Data Analyst
+                        <hr>
+                    </div>
+                    <li style="font-size:14px">Certifications</li>
+                    <div class="content hidden" id="fraud-detection-content" style="font-size:14px">
+                        ● Introduction to Artificial Intelligence (Infosys) <br>
+                        ● Introduction to Data Science (Infosys) <br>
+                        ● Data Science Foundations (Great Learning) <br>
+                        ● Career Essentials in Generative AI (Microsoft and Linkedin)
+                        <hr>
+                    </div>
+                </ol>
+                <center><button onclick="toggleContent('web-scraper-content')">1</button>
+                    <button onclick="toggleContent('data-analysis-content')">2</button>
+                    <button onclick="toggleContent('fraud-detection-content')">3</button>
+                    <br> <span style="color: #030180;font-size:12px">*Note: Click the buttons to view</span>
+                </center>
+
+                </p>
+            </div>
+        </div>
+
+
+
+
+        <div class="window" id="education-window">
+            <div class="window-title">
+                Education
+                <img class="close-button" src="/img/Exit.png" style="width:25px"
+                    onclick="closeWindow('education-window')">
+            </div>
+            <div class="window-content">
+                <!-- Add your content here -->
+                <span style="font-family: Anek Telugu;font-size:20px">
+                    ● JIMS Engineering Management Technical Campus (Expected May 2024)<br>
+                    Bachelor of Computer Applications, <br> Current CGPA: 9.2/10 <br><br>
+                    ● Vishwa Bharati Public School, Noida (July 2021) <br>
+                    12th, Commerce with Informative Practices, <br> Percentage: 87.2% <br><br>
+                    ● Vishwa Bharati Public School, Noida, (July 2019)<br>
+                    10th, <br> Percentage: 77.25%
+                </span>
+            </div>
+        </div>
+
+        <div class="window" id="projects-window">
+
+            <div class="window-title">
+                My Projects
+                <img class="close-button" src="/img/Exit.png" style="width:25px"
+                    onclick="closeWindow('projects-window')">
+            </div>
+            <div class="window-content">
+                <!-- <p  style="font-family: Anek Telugu;font-size:20px"> -->
+                <ol>
+                    <li style="background-color: #d0d0d0;">Web Data Scraper</li>
+                    <div class="content hidden" id="web-scraper-content">
+                        ● Developed a JavaScript script using Axios and Cheerio for real-time weather data scraping.
+                        <br>
+                        ● Extracted data such as daily high and low temperatures, weather conditions, and date. <br>
+                        ● Implementation of error handling and data formatting for accuracy and storing data in a JSON
+                        file for future analysis. <br><span><a href="https://github.com/adityaacharyagithub/weatherapi"
+                                style="font-family: Anek Telugu;font-size:20px">Github</a></span>
+                        <hr>
+                    </div>
+                    <li style="background-color: #d0d0d0;">Data Analysis and Visualization on Data</li>
+                    <div class="content hidden" id="data-analysis-content">
+                        ● Conducted data cleaning on employee data, removing redundant columns and handling missing
+                        values and outliers. <br>
+                        ● Utilized Python's Pandas library to manipulate and preprocess the dataset. <br>
+                        ● Generated informative data visualizations, including pie charts, bar graphs, and histograms.
+
+                        <br><span><a href="https://github.com/adityaacharyagithub/Data-Analysis-IBMDataset-Project"
+                                style="font-family: Anek Telugu;font-size:20px">Github</a></span>
+                        <hr>
+                    </div>
+                    <li style="background-color: #d0d0d0;">Fraud Detection System for Financial Transactions</li>
+                    <div class="content hidden" id="fraud-detection-content">
+                        ● Analyzed and cleaned a dataset of 6.4 million financial transactions. <br>
+                        ● Identified 8,213 fraudulent and balanced the dataset by randomly sampling 8,213 each. <br>
+                        ● Divided the sampled dataset into (X) and (Y) variables, and applied logistic regression.<br>
+                        ● Achieved a high accuracy score of 95% on the test dataset, Precision: 96%, F1 Score: 95%.
+
+                        <br><span><a href="https://github.com/adityaacharyagithub/fraud_detection_ml_project"
+                                style="font-family: Anek Telugu;font-size:20px">Github</a></span>
+                        <hr>
+                    </div>
+                </ol>
+                </p>
+                <center><button onclick="toggleContent('web-scraper-content')">1</button>
+                    <button onclick="toggleContent('data-analysis-content')">2</button>
+                    <button onclick="toggleContent('fraud-detection-content')">3</button>
+                    <br> <span style="color: #030180;font-size:12px">*Note: Click the buttons to view the
+                        projects</span>
+                </center>
+            </div>
+        </div>
+
+
+
+        <!-- Contact App -->
+        <div class="window" id="contact-window">
+            <div class="window-title">
+                Contact Me
+                <img class="close-button" src="/img/Exit.png" style="width:25px"
+                    onclick="closeWindow('contact-window')">
+            </div>
+            <div class="window-content">
+                <!-- Add your content here -->
+                <center>
+                    <p style="font-family: Anek Telugu;font-size:25px">Mail: adityaacharyaworks@gmail <br> Phone: +91
+                        9871202059 <br><img src="/img/github.png" width="20px"
+                            style="padding-right: 5px;padding-top:5px" alt=""> <a
+                            href="https://github.com/adityaacharyagithub"
+                            style="font-family: Anek Telugu;font-size:25px">Github</a> <img src="/img/linkedin.png"
+                            width="20px" style="padding-right: 5px;padding-top:5px" alt=""><a
+                            href="https://www.linkedin.com/in/aditya-acharya-554ab3283/"
+                            style="font-family: Anek Telugu;font-size:25px">Linkedin</a> <img src="/img/leetcode.png"
+                            width="20px" style="padding-right: 5px;padding-top:5px" alt=""><a
+                            href="https://leetcode.com/adityaacharya/"
+                            style="font-family: Anek Telugu;font-size:25px">Leetcode</a></p>
+                </center>
+            </div>
+        </div>
+
+        <!-- Download CV App -->
+        <div class="window" id="cv-window">
+            <div class="window-title">
+                My resume
+                <img class="close-button" src="/img/Exit.png" style="width:25px" onclick="closeWindow('cv-window')">
+            </div>
+            <div class="window-content">
+                <center><img src="/img/pointer.ico" style="transform: rotate(90deg);" alt=""></center>
+                <p>
+                    <a href="/assets/resume.pdf" style="font-family: Anek Telugu;font-size: 25px" target="_blank">
+                        <center>Click to view or download</center>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskbar">
+        <div id="start-button" class="click" onclick="toggleStartMenu()">
+            <img src="/assets/start-icon.png" class="ci" width="120px" height="38px"
+                style="margin-top: 4px;margin-left:-20px ;" alt="Start">
+            <audio class="cs">
+                <source src="/sounds/click.wav" type="audio/mpeg">
+            </audio>
+        </div>
+        <!-- Add more taskbar icons as needed -->
+    </div>
+
+
+    <div id="start-menu" class="start-menu">
+        <div class="start-menu-header">
+            <img src="/assets/users.png" style="width: 50px;border:2px solid rgb(199, 199, 199)" alt=""><span
+                style="font-size: 22px;padding-left:5px">Aditya Acharya</span>
+        </div>
+        <ul class="start-menu-programs">
+            <li onclick="toggleWindow('education-window')">
+                <img src="/img/Education.png" style="width: 20px;" alt="">
+                <span>Education</span>
+            </li>
+            <li onclick="toggleWindow('projects-window')">
+                <img src="/img/Projects.png" style="width: 20px;" alt="">
+                <span>Projects</span>
+            </li>
+            <li onclick="toggleWindow('about-window')">
+                <img src="/img/About.png" style="width: 20px;" alt="">
+                <span>About</span>
+            </li>
+            <li onclick="toggleWindow('contact-window')">
+                <img src="/img/Contact.png" style="width: 20px;" alt="">
+                <span>Contact</span>
+            </li>
+            <li onclick="toggleWindow('cv-window')">
+                <img src="/img/Resume.png" style="width: 20px;" alt="">
+                <span>Download CV</span>
+            </li>
+        </ul>
+        <hr>
+        <ul class="start-menu-programs">
+            <li>
+                <img src="/img/MyComputer.ico" style="width: 20px;" alt="">
+                <audio id="my-computer-audio">
+                    <source src="/sounds/my_computer_sound.mp3" type="audio/mpeg">
+                </audio>
+                <span>My Computer</span>
+            </li>
+            <li>
+                <img src="/img/MyDocuments.ico" style="width: 20px;" alt="">
+                <audio id="my-documents-audio">
+                    <source src="/sounds/my_computer_sound.mp3" type="audio/mpeg">
+                </audio>
+                <span>My Documents</span>
+            </li>
+        </ul>
+        <hr>
+        <ul class="start-menu-programs">
+            <li>
+                <img src="/img/ControlPanel.ico" style="width: 20px;" alt="">
+                <audio id="my-control-panel-audio">
+                    <source src="/sounds/my_computer_sound.mp3" type="audio/mpeg">
+                </audio>
+                <span>Control Panel</span>
+            </li>
+            <li>
+                <img src="/img/Network.ico" style="width: 20px;" alt="">
+                <audio id="network-audio">
+                    <source src="/sounds/my_computer_sound.mp3" type="audio/mpeg">
+                </audio>
+                <span>Network</span>
+            </li>
+        </ul>
+
+        <div class="start-menu-footer">
+            <img src="/img/Standby.png" style="width: 35px;padding-right:6px" alt="">
+            <span>Log Off</span>
+
+            <img src="/img/Power.png" style="width: 35px;padding-left:15px;padding-right:6px" alt="">
+            <span>Shut Down</span>
+
+        </div>
+    </div>
+
+
+
+    <script>
+        const openWindows = {}; // Track open windows
+        const taskbarIcons = {}; // Track taskbar icons
+
+        // JavaScript function to toggle Start menu visibility
+        function toggleStartMenu() {
+            const startMenu = document.getElementById('start-menu');
+            if (startMenu.style.display === 'block') {
+                startMenu.style.display = 'none';
+            } else {
+                startMenu.style.display = 'block';
+            }
+        }
+
+
+
+        // JavaScript function to close window
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.transform = 'translate(-50%, -50%) scale(0)'; // Hide the window with scale(0)
+
+            // Remove the taskbar icon for the closed window
+            removeTaskbarIcon(windowId);
+        }
+
+        let zIndex = 1; // Initialize z-index
+
+
+        function toggleWindow(windowId) {
+            const window = document.getElementById(windowId);
+
+            // Check if the window is already open
+            if (window.style.transform === 'translate(-50%, -50%) scale(1)') {
+                // If open, bring it to the front by increasing z-index
+                window.style.zIndex = zIndex++; // Assign a unique z-index value
+                return;
+            }
+
+            if (!openWindows[windowId]) {
+                // Create a taskbar icon for the window if it doesn't exist
+                createTaskbarIcon(windowId);
+            }
+
+            // Set z-index for the newly opened window
+            window.style.zIndex = zIndex++; // Assign a unique z-index value
+            window.style.transform = 'translate(-50%, -50%) scale(1)'; // Show the window with scale(1)
+        }
+
+
+        let tabOpened = false; // To track if a tab is already opened
+
+        // Function to create a taskbar icon for an open window
+        function createTaskbarIcon(windowId, tabName) {
+            const taskbar = document.getElementById('taskbar');
+            const icon = document.createElement('div'); // Use a <div> for the taskbar icon
+            icon.setAttribute('data-tab-id', windowId); // Set a data attribute to identify the associated window
+            icon.innerText = tabName; // Set the tab name as the inner text
+            icon.style.fontFamily = 'Anek Telugu'; // Set font family to Anek Telugu
+            icon.style.fontSize = '15px';          // Set font size to 15 pixels
+            icon.style.fontWeight = 'bold';
+            // Add click event to toggle the associated window
+            icon.addEventListener('click', function () {
+                toggleWindow(windowId);
+            });
+
+            // Apply padding-left to the first opened tab
+            if (!tabOpened) {
+                icon.style.paddingLeft = '70px';
+                tabOpened = false;
+            }
+
+            // Add the taskbar icon to the taskbar
+            taskbar.appendChild(icon);
+
+            openWindows[windowId] = true;
+            taskbarIcons[windowId] = icon;
+        }
+
+        // Function to toggle window visibility
+        function toggleWindow(windowId) {
+            const window = document.getElementById(windowId);
+
+            // Check if the window is already open
+            if (window.style.transform === 'translate(-50%, -50%) scale(1)') {
+                // If open, bring it to the front by increasing z-index
+                window.style.zIndex = Date.now(); // Assign a unique z-index value
+                removeOpenedClass(windowId); // Remove the "opened" class from the taskbar icon
+                return;
+            }
+
+            if (!openWindows[windowId]) {
+                // Create a taskbar icon for the window if it doesn't exist
+                createTaskbarIcon(windowId, window.querySelector('.window-title').innerText);
+            }
+
+            // Set z-index for the newly opened window
+            window.style.zIndex = Date.now(); // Assign a unique z-index value
+            window.style.transform = 'translate(-50%, -50%) scale(1)'; // Show the window with scale(1)
+            addOpenedClass(windowId); // Add the "opened" class to the taskbar icon
+        }
+
+        // Function to add the "opened" class to the taskbar icon
+        function addOpenedClass(windowId) {
+            const icon = taskbarIcons[windowId];
+            if (icon) {
+                icon.classList.add('opened');
+            }
+        }
+
+        // Function to remove the "opened" class from the taskbar icon
+        function removeOpenedClass(windowId) {
+            const icon = taskbarIcons[windowId];
+            if (icon) {
+                icon.classList.remove('opened');
+            }
+        }
+
+
+
+
+        // Function to remove a taskbar icon for a closed window
+        function removeTaskbarIcon(windowId) {
+            const taskbar = document.getElementById('taskbar');
+            if (taskbarIcons[windowId]) {
+                taskbar.removeChild(taskbarIcons[windowId]);
+                delete openWindows[windowId];
+                delete taskbarIcons[windowId];
+            }
+        }
+    </script>
+    <script>
+        function toggleContent(contentId) {
+            const content = document.getElementById(contentId);
+            const allContents = document.querySelectorAll('.content');
+            allContents.forEach((el) => {
+                if (el.id === contentId) {
+                    el.classList.toggle('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+    </script>
+    <script>
+        // Function to hide the loading screen and show the actual content after a delay
+        function enterCode() {
+            const loadingScreen = document.querySelector('.loading-screen');
+            const actualContent = document.getElementById('desktop');
+            const loadingBar = document.querySelector('.loading-bar');
+
+            // Set a timeout to simulate the loading process
+            setTimeout(function () {
+                loadingBar.style.width = '100%'; // Set the loading bar to 100% width
+                setTimeout(function () {
+                    loadingScreen.style.display = 'none';
+                    actualContent.style.display = 'block';
+                }, 300); // Adjust the delay before hiding the loading screen
+            }, 0); // Adjust the total loading time (in milliseconds)
+        }
+
+        // Call the enterCode function to start the loading screen animation
+        enterCode();
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get references to the image and audio elements by class
+            const images = document.querySelectorAll(".ci");
+            const audio = document.querySelector('.cs'); // Access the audio element within "cv-window"
+
+            // Add a click event listener to the image(s)
+            images.forEach(function (image) {
+                image.addEventListener("click", function () {
+                    // Check if the audio is currently paused (not playing)
+                    if (audio.paused) {
+                        // Play the audio
+                        audio.play();
+                    } else {
+                        // If the audio is already playing, pause and reset it
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
+</body>
+
+</html>
